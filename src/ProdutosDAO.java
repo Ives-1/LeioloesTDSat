@@ -20,6 +20,7 @@ public class ProdutosDAO {
     PreparedStatement prep;
     ResultSet resultset;
     ArrayList<ProdutosDTO> listagem = new ArrayList<>();
+    ArrayList<ProdutosDTO> listaProdutosVendidos = new ArrayList<>();
 
     public int cadastrarProduto(ProdutosDTO produto) {
         conn = new conectaDAO().connectDB();
@@ -39,6 +40,7 @@ public class ProdutosDAO {
 
     public ArrayList<ProdutosDTO> listarProdutos() {
         String sql = "SELECT * FROM produto";
+
         try {
             conn = new conectaDAO().connectDB();
             prep = conn.prepareStatement(sql);
@@ -59,8 +61,31 @@ public class ProdutosDAO {
         }
         return listagem;
     }
-    
-    public void venderProduto(int id){
+
+    public ArrayList<ProdutosDTO> listarProdutosVendidos() {
+        String sql = "SELECT * FROM produto WHERE STATUS = ?";
+        try {
+            conn = new conectaDAO().connectDB();
+            prep = conn.prepareCall(sql);
+            prep.setString(1, "Vendido");
+            resultset = prep.executeQuery();
+
+            while (resultset.next()) {
+                ProdutosDTO pDTO = new ProdutosDTO();
+                pDTO.setId(resultset.getInt("id"));
+                pDTO.setNome(resultset.getString("nome"));
+                pDTO.setValor(resultset.getInt("valor"));
+                pDTO.setStatus(resultset.getString("status"));
+
+                listaProdutosVendidos.add(pDTO);
+            }
+        } catch (Exception e) {
+            System.out.println("Erro ao listar produto: " + e.getMessage());
+        }
+        return listaProdutosVendidos;
+    }
+
+    public void venderProduto(int id) {
         try {
             conn = new conectaDAO().connectDB();
             prep = conn.prepareStatement("UPDATE Produto SET status = ? WHERE id = ?");

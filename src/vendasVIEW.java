@@ -1,3 +1,7 @@
+
+import java.util.ArrayList;
+import javax.swing.table.DefaultTableModel;
+
 /*
  * Click nbfs://nbhost/SystemFileSystem/Templates/Licenses/license-default.txt to change this license
  * Click nbfs://nbhost/SystemFileSystem/Templates/GUIForms/JFrame.java to edit this template
@@ -14,6 +18,28 @@ public class vendasVIEW extends javax.swing.JFrame {
      */
     public vendasVIEW() {
         initComponents();
+        atualizaLista();
+    }
+    
+    public void atualizaLista(){
+        try {
+            ProdutosDAO pDAO = new ProdutosDAO();
+            
+            DefaultTableModel model = (DefaultTableModel) listaVendidos.getModel();
+            model.setNumRows(0);
+            
+            ArrayList<ProdutosDTO> listagem = pDAO.listarProdutosVendidos();
+            
+            for (int i = 0; i < listagem.size(); i++) {
+                model.addRow(new Object[]{
+                    listagem.get(i).getId(),
+                    listagem.get(i).getNome(),
+                    listagem.get(i).getValor(),
+                    listagem.get(i).getStatus(),
+                });
+            }
+        } catch (Exception e) {
+        }
     }
 
     /**
@@ -28,7 +54,7 @@ public class vendasVIEW extends javax.swing.JFrame {
         jPanel1 = new javax.swing.JPanel();
         jLabel1 = new javax.swing.JLabel();
         jScrollPane1 = new javax.swing.JScrollPane();
-        jTable1 = new javax.swing.JTable();
+        listaVendidos = new javax.swing.JTable();
         btVoltar = new javax.swing.JButton();
 
         setDefaultCloseOperation(javax.swing.WindowConstants.EXIT_ON_CLOSE);
@@ -36,7 +62,7 @@ public class vendasVIEW extends javax.swing.JFrame {
         jLabel1.setFont(new java.awt.Font("Lucida Fax", 0, 18)); // NOI18N
         jLabel1.setText("Lista de Produtos Vendidos");
 
-        jTable1.setModel(new javax.swing.table.DefaultTableModel(
+        listaVendidos.setModel(new javax.swing.table.DefaultTableModel(
             new Object [][] {
 
             },
@@ -44,9 +70,14 @@ public class vendasVIEW extends javax.swing.JFrame {
                 "ID", "Nome", "Valor", "Status"
             }
         ));
-        jScrollPane1.setViewportView(jTable1);
+        jScrollPane1.setViewportView(listaVendidos);
 
         btVoltar.setText("Voltar");
+        btVoltar.addActionListener(new java.awt.event.ActionListener() {
+            public void actionPerformed(java.awt.event.ActionEvent evt) {
+                btVoltarActionPerformed(evt);
+            }
+        });
 
         javax.swing.GroupLayout jPanel1Layout = new javax.swing.GroupLayout(jPanel1);
         jPanel1.setLayout(jPanel1Layout);
@@ -89,6 +120,10 @@ public class vendasVIEW extends javax.swing.JFrame {
         pack();
     }// </editor-fold>//GEN-END:initComponents
 
+    private void btVoltarActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_btVoltarActionPerformed
+        this.dispose();
+    }//GEN-LAST:event_btVoltarActionPerformed
+
     /**
      * @param args the command line arguments
      */
@@ -129,6 +164,6 @@ public class vendasVIEW extends javax.swing.JFrame {
     private javax.swing.JLabel jLabel1;
     private javax.swing.JPanel jPanel1;
     private javax.swing.JScrollPane jScrollPane1;
-    private javax.swing.JTable jTable1;
+    private javax.swing.JTable listaVendidos;
     // End of variables declaration//GEN-END:variables
 }
